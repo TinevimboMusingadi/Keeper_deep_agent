@@ -1,0 +1,10 @@
+{
+  "dependencies": [
+    "."
+  ],
+  "graphs": {
+    "finance": "./finance_agent/langgraph.py:agent"
+  }
+}
+
+

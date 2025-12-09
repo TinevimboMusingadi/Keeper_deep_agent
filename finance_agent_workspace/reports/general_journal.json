@@ -1,0 +1,12 @@
+[
+  {
+    "debit_code": "1010",
+    "credit_code": "4000",
+    "amount": 1000.0
+  },
+  {
+    "debit_code": "5000",
+    "credit_code": "1010",
+    "amount": 500.0
+  }
+]

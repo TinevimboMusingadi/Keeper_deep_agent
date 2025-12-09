@@ -1,0 +1,38 @@
+[
+  {
+    "code": "1010",
+    "name": "Cash",
+    "account_type": "asset",
+    "parent_code": null
+  },
+  {
+    "code": "1020",
+    "name": "Accounts Receivable",
+    "account_type": "asset",
+    "parent_code": null
+  },
+  {
+    "code": "2010",
+    "name": "Accounts Payable",
+    "account_type": "liability",
+    "parent_code": null
+  },
+  {
+    "code": "3010",
+    "name": "Retained Earnings",
+    "account_type": "equity",
+    "parent_code": null
+  },
+  {
+    "code": "4000",
+    "name": "Sales Revenue",
+    "account_type": "revenue",
+    "parent_code": null
+  },
+  {
+    "code": "5000",
+    "name": "Operating Expenses",
+    "account_type": "expense",
+    "parent_code": null
+  }
+]
