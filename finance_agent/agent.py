@@ -2,11 +2,18 @@
 
 from pathlib import Path
 
+from langchain.chat_models import init_chat_model
 from deepagents import create_deep_agent
 from deepagents.backends import FilesystemBackend
 
 from .config import DEFAULT_MODEL, ensure_workspace
 from .subagents import build_keeper_subagent, build_clerk_subagent
+
+
+def _create_model(model_name: str):
+    """Create a model instance using init_chat_model."""
+    # Use the langchain init_chat_model for proper initialization
+    return init_chat_model(model=f"anthropic:{model_name}", temperature=0.0)
 
 ROOT_PROMPT = """
 You are the Finance Orchestrator (root agent).
@@ -22,7 +29,7 @@ You are the Finance Orchestrator (root agent).
 
 
 def create_finance_agent(
-    model: str = DEFAULT_MODEL,
+    model_name: str = DEFAULT_MODEL,
     workspace_root: str | None = None,
 ) -> any:
     if workspace_root:
@@ -33,6 +40,9 @@ def create_finance_agent(
     else:
         root_dir = ensure_workspace()
     backend = FilesystemBackend(root_dir=str(root_dir))
+
+    # Create actual model instance
+    model = _create_model(model_name)
 
     keeper = build_keeper_subagent(model=model, backend=backend)
     clerk = build_clerk_subagent(model=model, backend=backend)

@@ -1,0 +1,1287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keeper Finance Agent</title>
+    <style>
+        :root {
+            --color-primary: #1c3c3c;
+            --color-user-message: #076699;
+            --color-user-message-bg: #e8f4f8;
+            --color-avatar-bg: #e8ebeb;
+            --color-success: #10b981;
+            --color-warning: #f59e0b;
+            --color-error: #ef4444;
+            --color-background: #f9f9f9;
+            --color-surface: #f9fafb;
+            --color-border: #e5e7eb;
+            --color-text-primary: #111827;
+            --color-text-secondary: #6b7280;
+            --color-text-tertiary: #9ca3af;
+            --color-sidebar: #f3f4f6;
+            --color-accent: #2F6868;
+            --color-code-bg: #1e1e1e;
+            --color-demo: #7c3aed;
+            --color-live: #dc2626;
+            --radius: 0.5rem;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --color-primary: #2dd4bf;
+                --color-user-message: #065a8a;
+                --color-user-message-bg: #2d2d2d;
+                --color-avatar-bg: #1c3c3c;
+                --color-success: #34d399;
+                --color-warning: #fbbf24;
+                --color-error: #f87171;
+                --color-background: #171717;
+                --color-surface: #262626;
+                --color-border: #404040;
+                --color-text-primary: #f3f4f6;
+                --color-text-secondary: #9ca3af;
+                --color-text-tertiary: #6b7280;
+                --color-sidebar: #1f1f1f;
+                --color-accent: #2dd4bf;
+                --color-code-bg: #0d0d0d;
+                --color-demo: #a78bfa;
+                --color-live: #f87171;
+            }
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        html, body {
+            height: 100%;
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-size: 14px;
+            line-height: 1.5;
+            color: var(--color-text-primary);
+            background-color: var(--color-background);
+        }
+
+        .app { display: flex; flex-direction: column; height: 100vh; }
+
+        /* Header */
+        .header {
+            display: flex;
+            height: 52px;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--color-border);
+            padding: 0 1rem;
+            background: var(--color-background);
+        }
+
+        .header-left { display: flex; align-items: center; gap: 1.5rem; }
+        .header-title { font-size: 1rem; font-weight: 600; letter-spacing: -0.01em; }
+        .header-right { display: flex; align-items: center; gap: 0.5rem; }
+
+        /* Mode Toggle */
+        .mode-toggle {
+            display: flex;
+            align-items: center;
+            padding: 0.125rem;
+            background: var(--color-surface);
+            border-radius: 0.375rem;
+            border: 1px solid var(--color-border);
+        }
+        
+        .mode-btn {
+            padding: 0.25rem 0.625rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border: none;
+            background: transparent;
+            color: var(--color-text-tertiary);
+            cursor: pointer;
+            border-radius: 0.25rem;
+            transition: all 0.15s;
+        }
+        
+        .mode-btn.active {
+            color: white;
+        }
+        
+        .mode-btn.demo.active { background: var(--color-demo); }
+        .mode-btn.live.active { background: var(--color-live); }
+        .mode-btn:hover:not(.active) { color: var(--color-text-primary); background: var(--color-border); }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 0.125rem;
+            padding: 0.125rem;
+            background: var(--color-surface);
+            border-radius: 0.375rem;
+        }
+        
+        .tab {
+            padding: 0.25rem 0.625rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+            border: none;
+            background: transparent;
+            color: var(--color-text-secondary);
+            cursor: pointer;
+            border-radius: 0.25rem;
+            transition: all 0.15s;
+        }
+        
+        .tab.active {
+            background: var(--color-background);
+            color: var(--color-text-primary);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+        
+        .tab:hover:not(.active) { color: var(--color-text-primary); }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            transition: all 0.15s;
+            border: 1px solid var(--color-border);
+            background: var(--color-background);
+            color: var(--color-text-primary);
+        }
+        
+        .btn:hover { background: var(--color-surface); }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .btn-primary { background: var(--color-accent); color: white; border-color: var(--color-accent); }
+        .btn-primary:hover { opacity: 0.9; }
+        .btn-success { background: var(--color-success); color: white; border-color: var(--color-success); }
+        .btn-sm { padding: 0.1875rem 0.375rem; font-size: 0.6875rem; }
+        .btn-download { background: var(--color-warning); color: white; border-color: var(--color-warning); }
+
+        /* Main layout */
+        .main { flex: 1; display: flex; overflow: hidden; }
+
+        /* Sidebar */
+        .sidebar {
+            width: 240px;
+            min-width: 240px;
+            border-right: 1px solid var(--color-border);
+            display: flex;
+            flex-direction: column;
+            background: var(--color-sidebar);
+        }
+        
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.625rem 0.75rem;
+            border-bottom: 1px solid var(--color-border);
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--color-text-secondary);
+        }
+
+        /* Document list */
+        .doc-list { flex: 1; overflow-y: auto; padding: 0.375rem; }
+        
+        .doc-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.375rem 0.5rem;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            font-size: 0.75rem;
+            transition: all 0.1s;
+            margin-bottom: 0.125rem;
+            background: transparent;
+            border: 1px solid transparent;
+            width: 100%;
+            text-align: left;
+        }
+        
+        .doc-item:hover { background: var(--color-surface); }
+        .doc-item.active { background: var(--color-surface); border-color: var(--color-accent); }
+        
+        .doc-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 0.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.625rem;
+            font-weight: 700;
+        }
+        
+        .doc-icon.csv { background: #dcfce7; color: #166534; }
+        .doc-icon.txt { background: #dbeafe; color: #1e40af; }
+        .doc-icon.json { background: #fef3c7; color: #92400e; }
+        
+        .doc-info { flex: 1; min-width: 0; }
+        .doc-name { font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 0.75rem; }
+        .doc-meta { font-size: 0.625rem; color: var(--color-text-tertiary); }
+
+        /* Content area */
+        .content { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+        /* Document viewer */
+        .doc-viewer { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        
+        .doc-viewer-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.625rem 1rem;
+            border-bottom: 1px solid var(--color-border);
+            background: var(--color-surface);
+            font-size: 0.8125rem;
+            font-weight: 600;
+        }
+        
+        .doc-viewer-content { flex: 1; overflow: auto; padding: 0.75rem; }
+        
+        .doc-preview {
+            background: var(--color-code-bg);
+            color: #d4d4d4;
+            padding: 0.75rem;
+            border-radius: 0.375rem;
+            font-family: 'Cascadia Code', 'Fira Code', monospace;
+            font-size: 0.75rem;
+            white-space: pre-wrap;
+            line-height: 1.5;
+            min-height: 100%;
+        }
+
+        /* Chat area */
+        .chat-area { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        
+        .messages { flex: 1; overflow-y: auto; padding: 1rem; }
+        .messages-container { max-width: 800px; margin: 0 auto; }
+
+        /* Message */
+        .message { margin-bottom: 1rem; }
+        .message-wrapper { display: flex; gap: 0.625rem; }
+        .message.human .message-wrapper { flex-direction: row-reverse; }
+
+        .avatar {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.6875rem;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+        
+        .avatar.ai { background: var(--color-avatar-bg); color: var(--color-primary); }
+        .avatar.human { background: var(--color-user-message); color: white; }
+
+        .message-content { flex: 1; max-width: 85%; }
+        .message-label { font-size: 0.625rem; font-weight: 500; color: var(--color-text-tertiary); margin-bottom: 0.25rem; display: flex; align-items: center; gap: 0.375rem; }
+        .message.human .message-label { text-align: right; justify-content: flex-end; }
+        
+        .message-bubble {
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.5rem;
+            line-height: 1.5;
+            font-size: 0.8125rem;
+        }
+        
+        .message.ai .message-bubble { background: var(--color-surface); border: 1px solid var(--color-border); }
+        .message.human .message-bubble { background: var(--color-user-message-bg); color: var(--color-user-message); margin-left: auto; }
+
+        /* Markdown in messages */
+        .message-bubble h2, .message-bubble h3 { margin: 0.5rem 0 0.375rem; font-size: 0.875rem; }
+        .message-bubble p { margin: 0.375rem 0; }
+        .message-bubble ul, .message-bubble ol { margin: 0.375rem 0; padding-left: 1.25rem; }
+        .message-bubble table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.75rem; }
+        .message-bubble th, .message-bubble td { border: 1px solid var(--color-border); padding: 0.25rem 0.5rem; }
+        .message-bubble th { background: var(--color-sidebar); }
+        .message-bubble code { background: var(--color-code-bg); color: #e5e5e5; padding: 0.0625rem 0.25rem; border-radius: 0.1875rem; font-size: 0.75rem; }
+        .message-bubble strong { color: var(--color-accent); }
+        .message-bubble hr { border: none; border-top: 1px solid var(--color-border); margin: 0.5rem 0; }
+
+        /* Generated file card */
+        .file-card {
+            display: flex;
+            align-items: center;
+            gap: 0.625rem;
+            padding: 0.5rem 0.625rem;
+            background: var(--color-sidebar);
+            border: 1px solid var(--color-border);
+            border-radius: 0.375rem;
+            margin-top: 0.5rem;
+        }
+        
+        .file-card-icon {
+            width: 28px;
+            height: 28px;
+            background: var(--color-warning);
+            color: white;
+            border-radius: 0.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+        
+        .file-card-info { flex: 1; }
+        .file-card-name { font-weight: 600; font-size: 0.75rem; }
+        .file-card-meta { font-size: 0.625rem; color: var(--color-text-tertiary); }
+
+        /* Reasoning panel */
+        .reasoning-panel {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: 0.375rem;
+            margin-top: 0.375rem;
+            overflow: hidden;
+        }
+        
+        .reasoning-header {
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+            padding: 0.375rem 0.5rem;
+            background: var(--color-sidebar);
+            font-size: 0.6875rem;
+            font-weight: 600;
+            cursor: pointer;
+            color: var(--color-text-secondary);
+        }
+        
+        .reasoning-header:hover { background: var(--color-border); }
+        
+        .reasoning-content {
+            padding: 0.5rem;
+            font-size: 0.75rem;
+            border-top: 1px solid var(--color-border);
+        }
+        
+        .reasoning-content.hidden { display: none; }
+        
+        .thinking-step {
+            padding: 0.25rem 0;
+            font-size: 0.6875rem;
+            color: var(--color-text-secondary);
+        }
+        
+        .tool-call-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.375rem;
+            padding: 0.375rem;
+            background: var(--color-background);
+            border-radius: 0.25rem;
+            margin-bottom: 0.375rem;
+        }
+        
+        .tool-call-name { font-weight: 600; color: var(--color-warning); font-size: 0.6875rem; }
+        .tool-call-args { font-family: monospace; font-size: 0.625rem; color: var(--color-text-tertiary); margin-top: 0.125rem; }
+        
+        .duration-badge {
+            font-size: 0.5625rem;
+            padding: 0.0625rem 0.25rem;
+            background: var(--color-success);
+            color: white;
+            border-radius: 9999px;
+            font-weight: 600;
+        }
+
+        /* Loading */
+        .loading { display: flex; align-items: center; gap: 0.375rem; padding: 0.375rem; color: var(--color-text-secondary); font-size: 0.75rem; }
+        .loading-dots { display: flex; gap: 2px; }
+        .loading-dot {
+            width: 4px;
+            height: 4px;
+            background: var(--color-text-tertiary);
+            border-radius: 50%;
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+        .loading-dot:nth-child(1) { animation-delay: -0.32s; }
+        .loading-dot:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
+
+        /* Input */
+        .input-area { padding: 0.5rem 1rem 0.75rem; background: var(--color-background); }
+        
+        .input-container {
+            max-width: 800px;
+            margin: 0 auto;
+            border: 1px solid var(--color-border);
+            border-radius: 0.5rem;
+            background: var(--color-background);
+            overflow: hidden;
+        }
+        
+        .context-bar {
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+            padding: 0.375rem 0.625rem;
+            background: var(--color-sidebar);
+            border-bottom: 1px solid var(--color-border);
+            font-size: 0.6875rem;
+        }
+        
+        .context-doc {
+            display: flex;
+            align-items: center;
+            gap: 0.1875rem;
+            padding: 0.125rem 0.375rem;
+            background: var(--color-accent);
+            color: white;
+            border-radius: 9999px;
+            font-size: 0.625rem;
+        }
+        
+        .context-doc .remove { cursor: pointer; opacity: 0.7; margin-left: 0.125rem; }
+        .context-doc .remove:hover { opacity: 1; }
+        
+        .input-form { display: flex; flex-direction: column; }
+        
+        .input-textarea {
+            width: 100%;
+            border: none;
+            outline: none;
+            resize: none;
+            padding: 0.625rem;
+            font-size: 0.8125rem;
+            line-height: 1.4;
+            background: transparent;
+            color: var(--color-text-primary);
+            font-family: inherit;
+        }
+        
+        .input-textarea::placeholder { color: var(--color-text-tertiary); }
+        
+        .input-actions { display: flex; justify-content: flex-end; gap: 0.375rem; padding: 0.375rem 0.625rem; }
+
+        /* Panel styles */
+        .panel { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        
+        .panel-header {
+            padding: 0.625rem 1rem;
+            border-bottom: 1px solid var(--color-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+        
+        .panel-content { flex: 1; overflow-y: auto; padding: 0.75rem; }
+        
+        .test-card {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: 0.375rem;
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .test-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.375rem; }
+        .test-card-title { font-weight: 600; font-size: 0.8125rem; }
+        
+        .test-badge {
+            font-size: 0.5625rem;
+            padding: 0.0625rem 0.375rem;
+            border-radius: 9999px;
+            font-weight: 600;
+        }
+        
+        .test-badge.easy { background: #dcfce7; color: #166534; }
+        .test-badge.medium { background: #fef3c7; color: #92400e; }
+        .test-badge.hard { background: #fecaca; color: #991b1b; }
+        
+        .test-description { font-size: 0.75rem; color: var(--color-text-secondary); margin-bottom: 0.5rem; }
+        
+        .test-expected {
+            font-size: 0.6875rem;
+            background: var(--color-background);
+            padding: 0.375rem;
+            border-radius: 0.25rem;
+            font-family: monospace;
+        }
+        
+        .test-result { margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid var(--color-border); }
+        
+        .result-status { display: flex; align-items: center; gap: 0.375rem; font-size: 0.75rem; font-weight: 500; }
+        .result-status.completed { color: var(--color-success); }
+        .result-status.running { color: var(--color-warning); }
+        .result-status.error { color: var(--color-error); }
+
+        /* Files list */
+        .file-item {
+            display: flex;
+            align-items: center;
+            gap: 0.625rem;
+            padding: 0.5rem 0.625rem;
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: 0.375rem;
+            margin-bottom: 0.375rem;
+        }
+        
+        .file-item-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--color-warning), #d97706);
+            color: white;
+            border-radius: 0.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+        
+        .file-item-info { flex: 1; }
+        .file-item-name { font-weight: 600; font-size: 0.8125rem; }
+        .file-item-meta { font-size: 0.625rem; color: var(--color-text-tertiary); }
+
+        /* Welcome */
+        .welcome {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        .welcome h2 { font-size: 1.25rem; font-weight: 700; margin-bottom: 0.375rem; }
+        .welcome p { color: var(--color-text-secondary); max-width: 360px; margin-bottom: 1.25rem; font-size: 0.875rem; }
+        
+        .suggestions { display: flex; flex-wrap: wrap; gap: 0.375rem; justify-content: center; max-width: 500px; }
+        
+        .suggestion {
+            padding: 0.375rem 0.75rem;
+            border: 1px solid var(--color-border);
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.15s;
+            background: var(--color-background);
+        }
+        
+        .suggestion:hover { border-color: var(--color-accent); background: var(--color-surface); }
+
+        /* Right panel */
+        .right-panel {
+            width: 260px;
+            min-width: 260px;
+            border-left: 1px solid var(--color-border);
+            display: flex;
+            flex-direction: column;
+            background: var(--color-sidebar);
+        }
+        
+        .right-panel.hidden { display: none; }
+        
+        .right-panel-header {
+            padding: 0.625rem 0.75rem;
+            border-bottom: 1px solid var(--color-border);
+            font-weight: 600;
+            font-size: 0.75rem;
+            color: var(--color-text-secondary);
+        }
+        
+        .right-panel-content { flex: 1; overflow-y: auto; padding: 0.5rem; }
+
+        /* Thread list */
+        .thread-item {
+            display: block;
+            width: 100%;
+            padding: 0.5rem;
+            text-align: left;
+            border: 1px solid transparent;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            transition: all 0.15s;
+            background: transparent;
+            margin-bottom: 0.125rem;
+        }
+        
+        .thread-item:hover { background: var(--color-surface); }
+        .thread-item.active { background: var(--color-surface); border-color: var(--color-accent); }
+        
+        .thread-header { display: flex; justify-content: space-between; margin-bottom: 0.0625rem; }
+        .thread-title { font-size: 0.75rem; font-weight: 500; }
+        .thread-time { font-size: 0.625rem; color: var(--color-text-tertiary); }
+        .thread-desc { font-size: 0.6875rem; color: var(--color-text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        
+        .status-dot { width: 5px; height: 5px; border-radius: 50%; display: inline-block; margin-left: 0.375rem; }
+        .status-idle { background: var(--color-success); }
+        .status-running { background: var(--color-warning); }
+        .status-error { background: var(--color-error); }
+
+        /* Empty state */
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            color: var(--color-text-tertiary);
+            text-align: center;
+            font-size: 0.8125rem;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 2.5px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--color-text-tertiary); }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <h1 class="header-title">Keeper Finance Agent</h1>
+                <div class="mode-toggle">
+                    <button class="mode-btn demo active" id="demoBtnMode">Demo</button>
+                    <button class="mode-btn live" id="liveBtnMode">Live</button>
+                </div>
+                <div class="tabs">
+                    <button class="tab active" data-tab="chat">Chat</button>
+                    <button class="tab" data-tab="documents">Docs</button>
+                    <button class="tab" data-tab="files">Files</button>
+                    <button class="tab" data-tab="benchmark">Test</button>
+                </div>
+            </div>
+            <div class="header-right">
+                <button class="btn" id="togglePanelBtn">Threads</button>
+                <button class="btn btn-primary" id="newThreadBtn">New</button>
+            </div>
+        </header>
+
+        <!-- Main -->
+        <main class="main">
+            <!-- Documents Sidebar -->
+            <aside class="sidebar" id="docSidebar">
+                <div class="sidebar-header">
+                    <span>Documents</span>
+                    <button class="btn btn-sm" id="uploadBtn">Upload</button>
+                </div>
+                <div class="doc-list" id="docList"></div>
+            </aside>
+
+            <!-- Main Content -->
+            <section class="content" id="mainContent">
+                <!-- Chat Tab -->
+                <div class="chat-area" id="chatTab">
+                    <div class="messages" id="messagesContainer">
+                        <div class="messages-container" id="messages">
+                            <div class="welcome" id="welcome">
+                                <h2>Keeper Finance Agent</h2>
+                                <p>AI assistant for bookkeeping, accounting, and financial analysis.</p>
+                                <div class="suggestions">
+                                    <button class="suggestion" onclick="sendSuggestion('Hello! What can you help me with?')">Say Hello</button>
+                                    <button class="suggestion" onclick="sendSuggestion('Analyze the invoice and extract all details')">Parse Invoice</button>
+                                    <button class="suggestion" onclick="sendSuggestion('Generate a trial balance from the transactions')">Trial Balance</button>
+                                    <button class="suggestion" onclick="sendSuggestion('Create an income statement showing revenue and expenses')">Income Statement</button>
+                                    <button class="suggestion" onclick="sendSuggestion('Reconcile the bank statement with our books')">Bank Reconciliation</button>
+                                    <button class="suggestion" onclick="sendSuggestion('Classify all transactions by account type')">Classify Transactions</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="input-area">
+                        <div class="input-container">
+                            <div class="context-bar" id="contextBar" style="display: none;">
+                                <span>Context:</span>
+                                <div id="contextDocs"></div>
+                            </div>
+                            <form class="input-form" id="inputForm">
+                                <textarea id="messageInput" class="input-textarea" placeholder="Ask about finances..." rows="1"></textarea>
+                                <div class="input-actions">
+                                    <button type="submit" class="btn btn-primary" id="sendBtn">Send</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Documents Tab -->
+                <div class="doc-viewer" id="documentsTab" style="display: none;">
+                    <div class="doc-viewer-header">
+                        <span id="docViewerTitle">Select a document</span>
+                        <button class="btn btn-sm" id="addToContextBtn" style="display: none;">Add to Context</button>
+                    </div>
+                    <div class="doc-viewer-content">
+                        <pre class="doc-preview" id="docPreview">Select a document from the sidebar to preview.</pre>
+                    </div>
+                </div>
+
+                <!-- Files Tab -->
+                <div class="panel" id="filesTab" style="display: none;">
+                    <div class="panel-header">
+                        <span>Generated Files</span>
+                        <button class="btn btn-sm" onclick="loadGeneratedFiles()">Refresh</button>
+                    </div>
+                    <div class="panel-content" id="filesContent">
+                        <div class="empty-state">
+                            <p>No files generated yet.</p>
+                            <p style="font-size: 0.75rem; margin-top: 0.25rem;">Ask Keeper to analyze documents to create downloadable files.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Benchmark Tab -->
+                <div class="panel" id="benchmarkTab" style="display: none;">
+                    <div class="panel-header">
+                        <span>Benchmark Tests</span>
+                        <button class="btn btn-success btn-sm" id="runAllBenchmarksBtn">Run All</button>
+                    </div>
+                    <div class="panel-content" id="benchmarkContent"></div>
+                </div>
+            </section>
+
+            <!-- Right Panel (Threads) -->
+            <aside class="right-panel" id="rightPanel">
+                <div class="right-panel-header">Threads</div>
+                <div class="right-panel-content" id="threadList"></div>
+            </aside>
+        </main>
+    </div>
+
+    <script>
+        const API_URL = 'http://127.0.0.1:8000';
+        
+        let currentThreadId = null;
+        let isLoading = false;
+        let currentMessages = [];
+        let reasoningSteps = [];
+        let documents = [];
+        let selectedDoc = null;
+        let contextDocs = [];
+        let benchmarkTests = [];
+        let generatedFiles = [];
+        let currentMode = 'demo';
+
+        const tabs = document.querySelectorAll('.tab');
+        const chatTab = document.getElementById('chatTab');
+        const documentsTab = document.getElementById('documentsTab');
+        const filesTab = document.getElementById('filesTab');
+        const benchmarkTab = document.getElementById('benchmarkTab');
+        const docList = document.getElementById('docList');
+        const docPreview = document.getElementById('docPreview');
+        const docViewerTitle = document.getElementById('docViewerTitle');
+        const addToContextBtn = document.getElementById('addToContextBtn');
+        const contextBar = document.getElementById('contextBar');
+        const contextDocs_el = document.getElementById('contextDocs');
+        const messages = document.getElementById('messages');
+        const messagesContainer = document.getElementById('messagesContainer');
+        const welcome = document.getElementById('welcome');
+        const inputForm = document.getElementById('inputForm');
+        const messageInput = document.getElementById('messageInput');
+        const sendBtn = document.getElementById('sendBtn');
+        const threadList = document.getElementById('threadList');
+        const rightPanel = document.getElementById('rightPanel');
+        const newThreadBtn = document.getElementById('newThreadBtn');
+        const togglePanelBtn = document.getElementById('togglePanelBtn');
+        const benchmarkContent = document.getElementById('benchmarkContent');
+        const runAllBenchmarksBtn = document.getElementById('runAllBenchmarksBtn');
+        const filesContent = document.getElementById('filesContent');
+        const demoBtnMode = document.getElementById('demoBtnMode');
+        const liveBtnMode = document.getElementById('liveBtnMode');
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadMode();
+            await loadDocuments();
+            await loadThreads();
+            await loadBenchmarkTests();
+            await loadGeneratedFiles();
+            setupEventListeners();
+        });
+
+        function setupEventListeners() {
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    showTab(tab.dataset.tab);
+                });
+            });
+
+            demoBtnMode.addEventListener('click', () => setMode('demo'));
+            liveBtnMode.addEventListener('click', () => setMode('live'));
+
+            inputForm.addEventListener('submit', handleSubmit);
+            messageInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    handleSubmit(e);
+                }
+            });
+            messageInput.addEventListener('input', () => {
+                messageInput.style.height = 'auto';
+                messageInput.style.height = Math.min(messageInput.scrollHeight, 120) + 'px';
+            });
+
+            newThreadBtn.addEventListener('click', newThread);
+            togglePanelBtn.addEventListener('click', () => rightPanel.classList.toggle('hidden'));
+            addToContextBtn.addEventListener('click', addDocToContext);
+            runAllBenchmarksBtn.addEventListener('click', runAllBenchmarks);
+        }
+
+        function showTab(tabName) {
+            chatTab.style.display = tabName === 'chat' ? 'flex' : 'none';
+            documentsTab.style.display = tabName === 'documents' ? 'flex' : 'none';
+            filesTab.style.display = tabName === 'files' ? 'flex' : 'none';
+            benchmarkTab.style.display = tabName === 'benchmark' ? 'flex' : 'none';
+            if (tabName === 'files') loadGeneratedFiles();
+        }
+
+        async function loadMode() {
+            try {
+                const res = await fetch(`${API_URL}/mode`);
+                const data = await res.json();
+                currentMode = data.mode;
+                updateModeUI();
+            } catch (e) { console.error('Failed to load mode:', e); }
+        }
+
+        async function setMode(mode) {
+            try {
+                const res = await fetch(`${API_URL}/mode`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ mode })
+                });
+                const data = await res.json();
+                currentMode = data.mode;
+                updateModeUI();
+            } catch (e) { console.error('Failed to set mode:', e); }
+        }
+
+        function updateModeUI() {
+            demoBtnMode.classList.toggle('active', currentMode === 'demo');
+            liveBtnMode.classList.toggle('active', currentMode === 'live');
+        }
+
+        async function loadDocuments() {
+            try {
+                const res = await fetch(`${API_URL}/documents`);
+                documents = await res.json();
+                renderDocuments();
+            } catch (e) {
+                console.error('Failed to load documents:', e);
+                docList.innerHTML = '<div class="empty-state"><p>Could not load</p></div>';
+            }
+        }
+
+        function renderDocuments() {
+            if (documents.length === 0) {
+                docList.innerHTML = '<div class="empty-state"><p>No documents</p></div>';
+                return;
+            }
+            
+            docList.innerHTML = documents.map(doc => {
+                const iconClass = doc.type || 'txt';
+                const size = doc.size > 1000 ? `${(doc.size/1000).toFixed(1)}K` : `${doc.size}B`;
+                return `
+                    <button class="doc-item ${selectedDoc?.name === doc.name ? 'active' : ''}" data-name="${doc.name}">
+                        <div class="doc-icon ${iconClass}">${(doc.type || 'txt').toUpperCase().slice(0,3)}</div>
+                        <div class="doc-info">
+                            <div class="doc-name">${doc.name}</div>
+                            <div class="doc-meta">${size}</div>
+                        </div>
+                    </button>
+                `;
+            }).join('');
+
+            docList.querySelectorAll('.doc-item').forEach(item => {
+                item.addEventListener('click', () => selectDocument(item.dataset.name));
+            });
+        }
+
+        function selectDocument(docName) {
+            selectedDoc = documents.find(d => d.name === docName);
+            if (selectedDoc) {
+                docPreview.textContent = selectedDoc.content;
+                docViewerTitle.textContent = selectedDoc.name;
+                addToContextBtn.style.display = 'inline-flex';
+                renderDocuments();
+            }
+        }
+
+        function addDocToContext() {
+            if (selectedDoc && !contextDocs.includes(selectedDoc.name)) {
+                contextDocs.push(selectedDoc.name);
+                renderContextBar();
+            }
+        }
+
+        function renderContextBar() {
+            if (contextDocs.length === 0) {
+                contextBar.style.display = 'none';
+                return;
+            }
+            contextBar.style.display = 'flex';
+            contextDocs_el.innerHTML = contextDocs.map(name => `
+                <span class="context-doc">${name}<span class="remove" onclick="removeFromContext('${name}')">×</span></span>
+            `).join('');
+        }
+
+        window.removeFromContext = function(name) {
+            contextDocs = contextDocs.filter(d => d !== name);
+            renderContextBar();
+        };
+
+        async function loadGeneratedFiles() {
+            try {
+                const res = await fetch(`${API_URL}/files`);
+                generatedFiles = await res.json();
+                renderGeneratedFiles();
+            } catch (e) { console.error('Failed to load files:', e); }
+        }
+
+        function renderGeneratedFiles() {
+            if (generatedFiles.length === 0) {
+                filesContent.innerHTML = `<div class="empty-state"><p>No files generated yet.</p><p style="font-size: 0.75rem; margin-top: 0.25rem;">Ask Keeper to analyze documents.</p></div>`;
+                return;
+            }
+            
+            filesContent.innerHTML = generatedFiles.map(f => {
+                const ext = f.name.split('.').pop().toUpperCase();
+                const size = f.size > 1000 ? `${(f.size/1000).toFixed(1)}K` : `${f.size}B`;
+                return `
+                    <div class="file-item">
+                        <div class="file-item-icon">${ext.slice(0,3)}</div>
+                        <div class="file-item-info">
+                            <div class="file-item-name">${f.name}</div>
+                            <div class="file-item-meta">${size} • ${new Date(f.created_at).toLocaleTimeString()}</div>
+                        </div>
+                        <button class="btn btn-sm" onclick="viewFile('${f.id}')">View</button>
+                        <button class="btn btn-sm btn-download" onclick="downloadFile('${f.id}')">Download</button>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        window.viewFile = async function(fileId) {
+            try {
+                const res = await fetch(`${API_URL}/files/${fileId}/content`);
+                const data = await res.json();
+                alert(`${data.name}\n\n${data.content.slice(0, 600)}${data.content.length > 600 ? '...' : ''}`);
+            } catch (e) { console.error('Failed to view file:', e); }
+        };
+
+        window.downloadFile = function(fileId) {
+            window.open(`${API_URL}/files/${fileId}/download`, '_blank');
+        };
+
+        async function loadThreads() {
+            try {
+                const res = await fetch(`${API_URL}/threads/search`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ limit: 20 })
+                });
+                const threads = await res.json();
+                renderThreads(threads);
+            } catch (e) { console.error('Failed to load threads:', e); }
+        }
+
+        function renderThreads(threads) {
+            if (!threads || threads.length === 0) {
+                threadList.innerHTML = '<div class="empty-state"><p>No threads</p></div>';
+                return;
+            }
+
+            threadList.innerHTML = threads.map(t => {
+                const lastMsg = t.messages?.[t.messages.length - 1];
+                const desc = lastMsg?.content?.slice(0, 35) || 'Empty';
+                const time = new Date(t.updated_at || t.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                return `
+                    <button class="thread-item ${t.thread_id === currentThreadId ? 'active' : ''}" data-id="${t.thread_id}">
+                        <div class="thread-header">
+                            <span class="thread-title">${t.thread_id.slice(0, 8)}...</span>
+                            <span class="thread-time">${time}</span>
+                        </div>
+                        <div class="thread-desc">${desc}<span class="status-dot status-${t.status}"></span></div>
+                    </button>
+                `;
+            }).join('');
+
+            threadList.querySelectorAll('.thread-item').forEach(item => {
+                item.addEventListener('click', () => loadThread(item.dataset.id));
+            });
+        }
+
+        async function newThread() {
+            try {
+                const res = await fetch(`${API_URL}/threads`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({})
+                });
+                const thread = await res.json();
+                currentThreadId = thread.thread_id;
+                currentMessages = [];
+                reasoningSteps = [];
+                clearMessages();
+                loadThreads();
+            } catch (e) { console.error('Failed to create thread:', e); }
+        }
+
+        async function loadThread(threadId) {
+            currentThreadId = threadId;
+            loadThreads();
+            try {
+                const res = await fetch(`${API_URL}/threads/${threadId}/state`);
+                const state = await res.json();
+                currentMessages = state.values?.messages || [];
+                reasoningSteps = state.values?.reasoning || [];
+                renderMessages();
+            } catch (e) { console.error('Failed to load thread:', e); }
+        }
+
+        function clearMessages() {
+            welcome.style.display = 'flex';
+            messages.innerHTML = '';
+            messages.appendChild(welcome);
+        }
+
+        function renderMessages() {
+            if (currentMessages.length === 0) {
+                welcome.style.display = 'flex';
+                return;
+            }
+            
+            welcome.style.display = 'none';
+            
+            let html = '';
+            currentMessages.forEach((msg, i) => {
+                if (msg.type === 'tool') return;
+                
+                const isHuman = msg.type === 'human';
+                let content = typeof msg.content === 'string' ? msg.content : JSON.stringify(msg.content);
+                
+                if (!isHuman) content = parseMarkdown(content);
+                
+                const actualReasoning = reasoningSteps[Math.floor(i/2)] || {};
+                
+                html += `
+                    <div class="message ${isHuman ? 'human' : 'ai'}">
+                        <div class="message-wrapper">
+                            <div class="avatar ${isHuman ? 'human' : 'ai'}">${isHuman ? 'U' : 'K'}</div>
+                            <div class="message-content">
+                                <div class="message-label">${isHuman ? 'You' : 'Keeper'}</div>
+                                <div class="message-bubble">${isHuman ? escapeHtml(content) : content}</div>
+                                ${!isHuman && msg.generated_file ? renderFileCard(msg.generated_file) : ''}
+                                ${!isHuman && actualReasoning.thinking?.length > 0 ? renderReasoning(actualReasoning) : ''}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            messages.innerHTML = html;
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function parseMarkdown(text) {
+            if (!text) return '';
+            text = text.replace(/^### (.*$)/gm, '<h3>$1</h3>');
+            text = text.replace(/^## (.*$)/gm, '<h2>$1</h2>');
+            text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            text = text.replace(/`([^`]+)`/g, '<code>$1</code>');
+            text = text.replace(/\|(.+)\|/g, (match) => {
+                const cells = match.split('|').filter(c => c.trim());
+                if (cells.every(c => c.trim().match(/^[-:]+$/))) return '';
+                return '<tr>' + cells.map(c => `<td>${c.trim()}</td>`).join('') + '</tr>';
+            });
+            if (text.includes('<tr>')) text = text.replace(/(<tr>.*<\/tr>\n?)+/g, '<table>$&</table>');
+            text = text.replace(/^---$/gm, '<hr>');
+            text = text.replace(/\n/g, '<br>');
+            return text;
+        }
+
+        function renderFileCard(file) {
+            return `
+                <div class="file-card">
+                    <div class="file-card-icon">${file.name.split('.').pop().toUpperCase().slice(0,3)}</div>
+                    <div class="file-card-info">
+                        <div class="file-card-name">${file.name}</div>
+                        <div class="file-card-meta">${file.size > 1000 ? (file.size/1000).toFixed(1) + 'K' : file.size + 'B'}</div>
+                    </div>
+                    <button class="btn btn-sm btn-download" onclick="downloadFile('${file.id}')">Download</button>
+                </div>
+            `;
+        }
+
+        function renderReasoning(reasoning) {
+            const hasThinking = reasoning.thinking?.length > 0;
+            const hasCalls = reasoning.tool_calls?.length > 0;
+            if (!hasThinking && !hasCalls) return '';
+            
+            return `
+                <div class="reasoning-panel">
+                    <div class="reasoning-header" onclick="this.nextElementSibling.classList.toggle('hidden')">
+                        Reasoning <span class="duration-badge">${reasoning.duration_ms}ms</span>
+                    </div>
+                    <div class="reasoning-content">
+                        ${reasoning.thinking?.map(t => `<div class="thinking-step">• ${t}</div>`).join('') || ''}
+                        ${reasoning.tool_calls?.map(tc => `
+                            <div class="tool-call-item">
+                                <span class="tool-call-name">${tc.name}</span>
+                                <div class="tool-call-args">${JSON.stringify(tc.args).slice(0, 150)}</div>
+                            </div>
+                        `).join('') || ''}
+                    </div>
+                </div>
+            `;
+        }
+
+        async function handleSubmit(e) {
+            e.preventDefault();
+            let content = messageInput.value.trim();
+            if (!content || isLoading) return;
+            
+            isLoading = true;
+            sendBtn.disabled = true;
+            sendBtn.textContent = '...';
+            
+            if (!currentThreadId) await newThread();
+            
+            if (contextDocs.length > 0) {
+                const docContexts = contextDocs.map(name => {
+                    const doc = documents.find(d => d.name === name);
+                    return doc ? `\n--- ${name} ---\n${doc.content.slice(0, 2000)}\n---` : '';
+                }).join('\n');
+                content = `Context:${docContexts}\n\nQuestion: ${content}`;
+            }
+            
+            welcome.style.display = 'none';
+            currentMessages.push({ type: 'human', content: messageInput.value.trim() });
+            renderMessages();
+            messageInput.value = '';
+            messageInput.style.height = 'auto';
+            
+            const loadingHtml = `
+                <div class="message ai" id="loadingMessage">
+                    <div class="message-wrapper">
+                        <div class="avatar ai">K</div>
+                        <div class="message-content">
+                            <div class="message-label">Keeper</div>
+                            <div class="loading">
+                                <div class="loading-dots"><div class="loading-dot"></div><div class="loading-dot"></div><div class="loading-dot"></div></div>
+                                <span>Thinking...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            messages.insertAdjacentHTML('beforeend', loadingHtml);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            
+            try {
+                await fetch(`${API_URL}/threads/${currentThreadId}/runs/wait`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        assistant_id: 'finance',
+                        input: { messages: [{ type: 'human', content }] }
+                    })
+                });
+                
+                const stateRes = await fetch(`${API_URL}/threads/${currentThreadId}/state`);
+                const state = await stateRes.json();
+                currentMessages = state.values?.messages || currentMessages;
+                reasoningSteps = state.values?.reasoning || [];
+                
+                document.getElementById('loadingMessage')?.remove();
+                renderMessages();
+                loadThreads();
+                loadGeneratedFiles();
+                
+            } catch (e) {
+                console.error('Error:', e);
+                document.getElementById('loadingMessage')?.remove();
+                currentMessages.push({ type: 'ai', content: 'Error: Could not get response.' });
+                renderMessages();
+            }
+            
+            isLoading = false;
+            sendBtn.disabled = false;
+            sendBtn.textContent = 'Send';
+        }
+
+        window.sendSuggestion = function(text) {
+            messageInput.value = text;
+            handleSubmit(new Event('submit'));
+        };
+
+        async function loadBenchmarkTests() {
+            try {
+                const res = await fetch(`${API_URL}/benchmark/tests`);
+                const data = await res.json();
+                benchmarkTests = data.test_cases || [];
+                renderBenchmarkTests();
+            } catch (e) { console.error('Failed to load benchmarks:', e); }
+        }
+
+        function renderBenchmarkTests() {
+            if (benchmarkTests.length === 0) {
+                benchmarkContent.innerHTML = '<div class="empty-state"><p>No tests available</p></div>';
+                return;
+            }
+            
+            benchmarkContent.innerHTML = benchmarkTests.map(test => `
+                <div class="test-card" id="test-${test.id}">
+                    <div class="test-card-header">
+                        <span class="test-card-title">${test.name}</span>
+                        <span class="test-badge ${test.difficulty}">${test.difficulty}</span>
+                    </div>
+                    <div class="test-description">${test.input}</div>
+                    <div class="test-expected">${JSON.stringify(test.expected_outputs, null, 2)}</div>
+                    <div class="test-result" id="result-${test.id}"></div>
+                    <button class="btn btn-sm" onclick="runSingleBenchmark('${test.id}')" style="margin-top: 0.375rem;">Run</button>
+                </div>
+            `).join('');
+        }
+
+        window.runSingleBenchmark = async function(testId) {
+            const resultEl = document.getElementById(`result-${testId}`);
+            resultEl.innerHTML = '<div class="result-status running">Running...</div>';
+            
+            try {
+                const res = await fetch(`${API_URL}/benchmark/run/${testId}`, { method: 'POST' });
+                const result = await res.json();
+                resultEl.innerHTML = `<div class="result-status ${result.status}">${result.status === 'completed' ? '✓' : '✗'} ${result.status} ${result.duration_ms ? `(${result.duration_ms}ms)` : ''}</div>`;
+            } catch (e) {
+                resultEl.innerHTML = '<div class="result-status error">Error</div>';
+            }
+        };
+
+        async function runAllBenchmarks() {
+            runAllBenchmarksBtn.disabled = true;
+            runAllBenchmarksBtn.textContent = 'Running...';
+            for (const test of benchmarkTests) await runSingleBenchmark(test.id);
+            runAllBenchmarksBtn.disabled = false;
+            runAllBenchmarksBtn.textContent = 'Run All';
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+    </script>
+</body>
+</html>

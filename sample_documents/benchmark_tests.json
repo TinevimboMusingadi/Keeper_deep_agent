@@ -1,0 +1,108 @@
+{
+  "benchmark_suite": "Finance Agent Evaluation",
+  "version": "1.0",
+  "test_cases": [
+    {
+      "id": "TC-001",
+      "category": "Invoice Processing",
+      "name": "Extract Invoice Details",
+      "input": "Extract all details from invoice_001.txt including vendor, amounts, and due date",
+      "expected_outputs": {
+        "vendor": "TechSupplies Inc.",
+        "total": 10236.87,
+        "due_date": "December 20, 2024",
+        "items_count": 4
+      },
+      "difficulty": "easy"
+    },
+    {
+      "id": "TC-002", 
+      "category": "Transaction Analysis",
+      "name": "Calculate Total Revenue",
+      "input": "Using transactions.csv, calculate total revenue for December 2024",
+      "expected_outputs": {
+        "service_revenue": 20000.00,
+        "interest_income": 125.00,
+        "total_revenue": 20125.00
+      },
+      "difficulty": "medium"
+    },
+    {
+      "id": "TC-003",
+      "category": "Trial Balance",
+      "name": "Generate Trial Balance",
+      "input": "Generate a trial balance from the transactions in transactions.csv",
+      "expected_outputs": {
+        "debits_equal_credits": true,
+        "total_debits": 101611.87,
+        "total_credits": 101611.87
+      },
+      "difficulty": "hard"
+    },
+    {
+      "id": "TC-004",
+      "category": "Bank Reconciliation",
+      "name": "Reconcile Bank Statement",
+      "input": "Reconcile transactions.csv with bank_statement_dec2024.txt and identify discrepancies",
+      "expected_outputs": {
+        "matching_transactions": 8,
+        "discrepancies": ["Equipment purchase not in bank (Accounts Payable)"]
+      },
+      "difficulty": "hard"
+    },
+    {
+      "id": "TC-005",
+      "category": "Financial Reports",
+      "name": "Income Statement",
+      "input": "Create an income statement from transactions.csv for December 2024",
+      "expected_outputs": {
+        "total_revenue": 20125.00,
+        "total_expenses": 16285.50,
+        "net_income": 3839.50
+      },
+      "difficulty": "medium"
+    },
+    {
+      "id": "TC-006",
+      "category": "Account Classification",
+      "name": "Classify Transactions",
+      "input": "Classify all transactions from transactions.csv using chart_of_accounts.csv",
+      "expected_outputs": {
+        "correctly_classified": true,
+        "asset_transactions": 5,
+        "expense_transactions": 7,
+        "revenue_transactions": 3
+      },
+      "difficulty": "medium"
+    },
+    {
+      "id": "TC-007",
+      "category": "Double Entry",
+      "name": "Verify Double Entry",
+      "input": "Verify all transactions in transactions.csv follow double-entry accounting",
+      "expected_outputs": {
+        "all_balanced": true,
+        "total_journal_entries": 13
+      },
+      "difficulty": "easy"
+    },
+    {
+      "id": "TC-008",
+      "category": "Cash Flow",
+      "name": "Cash Flow Analysis",
+      "input": "Calculate cash flow from operations using transactions.csv",
+      "expected_outputs": {
+        "cash_inflows": 17625.00,
+        "cash_outflows": 16285.50,
+        "net_cash_flow": 1339.50
+      },
+      "difficulty": "medium"
+    }
+  ],
+  "scoring": {
+    "easy": 10,
+    "medium": 20,
+    "hard": 30
+  }
+}
+

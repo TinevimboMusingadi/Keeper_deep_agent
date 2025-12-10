@@ -1,0 +1,35 @@
+═══════════════════════════════════════════════════════════════
+                        INVOICE #INV-2024-001
+═══════════════════════════════════════════════════════════════
+
+From: TechSupplies Inc.
+      123 Innovation Drive
+      San Francisco, CA 94105
+      Tax ID: 12-3456789
+
+To:   Acme Corporation
+      456 Business Park
+      New York, NY 10001
+
+Date: December 5, 2024
+Due:  December 20, 2024
+
+───────────────────────────────────────────────────────────────
+ITEM                          QTY    UNIT PRICE    AMOUNT
+───────────────────────────────────────────────────────────────
+Office Laptops (Dell XPS 15)   5     $1,299.00    $6,495.00
+Wireless Keyboards             10    $49.99       $499.90
+USB-C Docking Stations         5     $189.00      $945.00
+Office Software Licenses       5     $299.00      $1,495.00
+───────────────────────────────────────────────────────────────
+                              Subtotal:           $9,434.90
+                              Tax (8.5%):         $801.97
+                              ─────────────────────────────
+                              TOTAL DUE:          $10,236.87
+═══════════════════════════════════════════════════════════════
+
+Payment Terms: Net 15
+Bank: Chase Bank | Account: 1234567890 | Routing: 021000021
+
+Thank you for your business!
+

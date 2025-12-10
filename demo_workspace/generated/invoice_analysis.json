@@ -1,0 +1,40 @@
+{
+  "invoice_number": "INV-2024-001",
+  "vendor": "TechSupplies Inc.",
+  "vendor_address": "123 Innovation Drive, San Francisco, CA 94105",
+  "vendor_tax_id": "12-3456789",
+  "customer": "Acme Corporation",
+  "date": "2024-12-05",
+  "due_date": "2024-12-20",
+  "items": [
+    {
+      "description": "Office Laptops (Dell XPS 15)",
+      "qty": 5,
+      "unit_price": 1299.0,
+      "amount": 6495.0
+    },
+    {
+      "description": "Wireless Keyboards",
+      "qty": 10,
+      "unit_price": 49.99,
+      "amount": 499.9
+    },
+    {
+      "description": "USB-C Docking Stations",
+      "qty": 5,
+      "unit_price": 189.0,
+      "amount": 945.0
+    },
+    {
+      "description": "Office Software Licenses",
+      "qty": 5,
+      "unit_price": 299.0,
+      "amount": 1495.0
+    }
+  ],
+  "subtotal": 9434.9,
+  "tax_rate": 0.085,
+  "tax_amount": 801.97,
+  "total": 10236.87,
+  "payment_terms": "Net 15"
+}

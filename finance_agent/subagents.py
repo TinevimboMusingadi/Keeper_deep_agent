@@ -1,7 +1,7 @@
 """Subagent definitions for Keeper (ingest) and Clerk (reports)."""
 
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Any
 
 from deepagents import CompiledSubAgent, create_deep_agent
 from deepagents.backends import FilesystemBackend
@@ -50,7 +50,7 @@ def _build_backend(shared_backend: Optional[FilesystemBackend]) -> FilesystemBac
     return FilesystemBackend(root_dir=str(WORKSPACE_ROOT))
 
 
-def build_keeper_subagent(model: str, backend: Optional[FilesystemBackend] = None) -> CompiledSubAgent:
+def build_keeper_subagent(model: Any, backend: Optional[FilesystemBackend] = None) -> CompiledSubAgent:
     backend = _build_backend(backend)
     keeper_agent = create_deep_agent(
         model=model,
@@ -65,7 +65,7 @@ def build_keeper_subagent(model: str, backend: Optional[FilesystemBackend] = Non
     )
 
 
-def build_clerk_subagent(model: str, backend: Optional[FilesystemBackend] = None) -> CompiledSubAgent:
+def build_clerk_subagent(model: Any, backend: Optional[FilesystemBackend] = None) -> CompiledSubAgent:
     backend = _build_backend(backend)
     clerk_agent = create_deep_agent(
         model=model,

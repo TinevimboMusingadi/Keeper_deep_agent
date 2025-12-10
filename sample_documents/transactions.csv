@@ -1,0 +1,15 @@
+date,description,debit_account,credit_account,amount,reference
+2024-12-01,Opening Cash Balance,1010-Cash,3010-Owner Equity,50000.00,JE-001
+2024-12-02,Purchase Office Supplies,6010-Office Supplies,1010-Cash,450.00,JE-002
+2024-12-03,Client Payment Received,1010-Cash,4010-Service Revenue,12500.00,JE-003
+2024-12-04,Rent Payment Dec 2024,6020-Rent Expense,1010-Cash,3500.00,JE-004
+2024-12-05,Equipment Purchase,1510-Equipment,2010-Accounts Payable,10236.87,INV-001
+2024-12-06,Utility Bill Payment,6030-Utilities,1010-Cash,285.50,JE-005
+2024-12-07,Client Deposit Received,1010-Cash,2110-Unearned Revenue,5000.00,JE-006
+2024-12-08,Salary Payment,6040-Salaries Expense,1010-Cash,8500.00,JE-007
+2024-12-09,Insurance Premium,6050-Insurance,1010-Cash,1200.00,JE-008
+2024-12-10,Client Invoice #1001,1110-Accounts Receivable,4010-Service Revenue,7500.00,INV-1001
+2024-12-10,Marketing Expense,6060-Marketing,1010-Cash,2000.00,JE-009
+2024-12-11,Equipment Maintenance,6070-Repairs,1010-Cash,350.00,JE-010
+2024-12-12,Interest Income,1010-Cash,4020-Interest Income,125.00,JE-011
+

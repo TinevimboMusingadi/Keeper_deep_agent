@@ -1,0 +1,22 @@
+account_code,account_name,account_type,normal_balance,description
+1010,Cash,Asset,Debit,Main operating cash account
+1110,Accounts Receivable,Asset,Debit,Money owed by customers
+1210,Prepaid Expenses,Asset,Debit,Expenses paid in advance
+1510,Equipment,Asset,Debit,Office and computer equipment
+1520,Accumulated Depreciation,Asset,Credit,Contra asset for equipment
+2010,Accounts Payable,Liability,Credit,Money owed to suppliers
+2110,Unearned Revenue,Liability,Credit,Deposits received before service
+2210,Accrued Liabilities,Liability,Credit,Expenses incurred but not paid
+3010,Owner Equity,Equity,Credit,Owner's capital investment
+3020,Retained Earnings,Equity,Credit,Accumulated profits
+4010,Service Revenue,Revenue,Credit,Income from services
+4020,Interest Income,Revenue,Credit,Bank interest earned
+5010,Cost of Services,Expense,Debit,Direct costs of services
+6010,Office Supplies,Expense,Debit,Consumable office materials
+6020,Rent Expense,Expense,Debit,Monthly office rent
+6030,Utilities,Expense,Debit,Electric/water/internet
+6040,Salaries Expense,Expense,Debit,Employee compensation
+6050,Insurance,Expense,Debit,Business insurance premiums
+6060,Marketing,Expense,Debit,Advertising and promotion
+6070,Repairs & Maintenance,Expense,Debit,Equipment and facility repairs
+

@@ -4,7 +4,8 @@
   ],
   "graphs": {
     "finance": "./finance_agent/langgraph.py:agent"
-  }
+  },
+  "env": ".env"
 }
 
 

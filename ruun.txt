@@ -1,0 +1,157 @@
+# ================================================================
+#  🏦 KEEPER FINANCE AGENT - ENHANCED DEMO
+# ================================================================
+#
+#  Features:
+#    🎭 Demo Mode - Pre-canned responses (no API costs!)
+#    🤖 Live Mode - Real AI (uses Anthropic API)
+#    📄 Document viewing & context attachment
+#    🧠 Reasoning/thinking display
+#    📊 Benchmark testing
+#    💾 File generation & download
+#
+# ================================================================
+
+# QUICK START (PowerShell - Run all in one go)
+# --------------------------------------------
+
+# 1. Start Backend Server
+Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd C:\Users\PC\Keeper_deep_agent; uv run python demo_server.py"
+
+# 2. Start Frontend Server  
+Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd C:\Users\PC\Keeper_deep_agent\keeper-ui; python -m http.server 8080"
+
+# 3. Wait and Open Browser
+Start-Sleep -Seconds 10
+Start-Process "http://localhost:8080"
+
+
+# ================================================================
+#  🎭 DEMO MODE vs 🤖 LIVE MODE
+# ================================================================
+#
+#  DEMO MODE (Default):
+#    - Uses pre-canned responses
+#    - No API costs
+#    - Instant responses
+#    - Perfect for presentations/demos
+#    - Generates sample files
+#
+#  LIVE MODE:
+#    - Uses real Claude AI
+#    - Requires ANTHROPIC_API_KEY in .env
+#    - Real processing time
+#    - Handles any query
+#
+#  Toggle between modes using the buttons in the header!
+#
+# ================================================================
+
+
+# ================================================================
+#  DEMO SCENARIOS (Try these in Demo Mode!)
+# ================================================================
+
+# 1. "Hello! What can you help me with?"
+#    → Returns introduction with capabilities list
+
+# 2. "Analyze the invoice and extract all details"
+#    → Parses invoice, shows table, GENERATES DOWNLOADABLE JSON
+
+# 3. "Generate a trial balance from the transactions"
+#    → Creates trial balance, GENERATES DOWNLOADABLE CSV
+
+# 4. "Create an income statement"
+#    → Shows P&L report, GENERATES DOWNLOADABLE JSON
+
+# 5. "Reconcile the bank statement"
+#    → Compares bank vs books, identifies discrepancies
+
+# 6. "Classify all transactions"
+#    → Categorizes by account type with percentages
+
+
+# ================================================================
+#  UI TABS
+# ================================================================
+
+# 💬 CHAT - Conversation with agent
+#    - Quick action buttons
+#    - Document context bar
+#    - Reasoning panel (expandable)
+#    - Mode indicator (DEMO/LIVE)
+
+# 📄 DOCS - Document viewer
+#    - View all sample documents
+#    - Add documents to chat context
+
+# 💾 FILES - Generated files
+#    - View files created by agent
+#    - Download JSON/CSV exports
+
+# 📊 TEST - Benchmark suite
+#    - 8 financial test cases
+#    - Easy/Medium/Hard difficulty
+#    - Run individual or all tests
+
+
+# ================================================================
+#  SAMPLE DOCUMENTS INCLUDED
+# ================================================================
+#
+#  invoice_001.txt         - Sample invoice ($10,236.87)
+#  transactions.csv        - 13 journal entries
+#  chart_of_accounts.csv   - 20 accounts
+#  bank_statement_dec2024  - December bank statement
+#  benchmark_tests.json    - Test cases
+#
+# ================================================================
+
+
+# ================================================================
+#  API ENDPOINTS (http://localhost:8000)
+# ================================================================
+
+# Mode Control:
+# GET  /mode           - Get current mode (demo/live)
+# POST /mode           - Set mode {"mode": "demo"} or {"mode": "live"}
+
+# Documents:
+# GET  /documents      - List all documents
+# POST /documents/upload - Upload new document
+
+# Generated Files:
+# GET  /files                    - List generated files
+# GET  /files/{id}/download      - Download file
+# GET  /files/{id}/content       - View file content
+
+# Threads:
+# POST /threads                  - Create thread
+# POST /threads/{id}/runs/wait   - Send message
+# GET  /threads/{id}/state       - Get state with reasoning
+
+# Benchmarks:
+# GET  /benchmark/tests          - Get test cases
+# POST /benchmark/run/{test_id}  - Run single test
+# POST /benchmark/run-all        - Run all tests
+
+# Swagger Docs:
+# http://localhost:8000/docs
+
+
+# ================================================================
+#  TROUBLESHOOTING
+# ================================================================
+
+# If servers won't start:
+Get-Process python -ErrorAction SilentlyContinue | Stop-Process -Force
+
+# Check ports:
+netstat -ano | findstr :8000
+netstat -ano | findstr :8080
+
+# Re-install dependencies:
+uv pip install fastapi uvicorn python-multipart
+
+# Check API key (for Live Mode):
+Get-Content .env

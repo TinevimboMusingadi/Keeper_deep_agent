@@ -1,0 +1,42 @@
+╔══════════════════════════════════════════════════════════════════╗
+║                    CHASE BUSINESS CHECKING                        ║
+║                    Statement Period: December 2024                ║
+╠══════════════════════════════════════════════════════════════════╣
+║  Account Number: ****7890                                         ║
+║  Statement Date: December 31, 2024                                ║
+╚══════════════════════════════════════════════════════════════════╝
+
+ACCOUNT SUMMARY
+───────────────────────────────────────────────────────────────────
+Beginning Balance (Dec 1):                           $50,000.00
+Total Deposits:                                      $25,125.00
+Total Withdrawals:                                  -$16,285.50
+Ending Balance (Dec 31):                             $58,839.50
+───────────────────────────────────────────────────────────────────
+
+TRANSACTION DETAILS
+═══════════════════════════════════════════════════════════════════
+DATE        DESCRIPTION                    DEBIT      CREDIT    BALANCE
+───────────────────────────────────────────────────────────────────
+12/01  Opening Balance                                         $50,000.00
+12/02  Office Depot #1234                  $450.00             $49,550.00
+12/03  Wire Transfer - Client ABC                  $12,500.00  $62,050.00
+12/04  Rent Payment - Property Mgmt      $3,500.00             $58,550.00
+12/06  Con Edison Utilities                $285.50             $58,264.50
+12/07  Client Deposit - XYZ Corp                    $5,000.00  $63,264.50
+12/08  Payroll - ADP                     $8,500.00             $54,764.50
+12/09  State Farm Insurance              $1,200.00             $53,564.50
+12/10  Facebook Ads                      $2,000.00             $51,564.50
+12/11  Joe's Repairs                       $350.00             $51,214.50
+12/11  Interest Credit                                 $125.00  $51,339.50
+12/15  Client Wire - DEF Inc                        $7,500.00  $58,839.50
+───────────────────────────────────────────────────────────────────
+
+MONTHLY SUMMARY BY CATEGORY
+───────────────────────────────────────────────────────────────────
+Deposits:    4 transactions    Total: $25,125.00
+Withdrawals: 7 transactions    Total: $16,285.50
+───────────────────────────────────────────────────────────────────
+
+Questions? Call 1-800-935-9935 or visit chase.com/business
+
